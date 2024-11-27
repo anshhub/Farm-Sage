@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farming Hub - Weather Forecast</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="emblem"></div>
+            <ul class="menu">
+                <li><a href="#">About</a></li>
+                <li><a href="#">User</a></li>
+                <li><a href="#">Related Links</a></li>
+                <li><a href="#">FAQs</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header>
+                <h1>FarmSage</h1>
+                <p>Exploration toward better organic and sustainable farming</p>
+            </header>
+
+            <!-- Hero Section -->
+            <section class="hero">
+                <div class="hero-image">
+                    <div class="info">
+                        <h2>Welcome to FarmSage</h2>
+                        <button>About</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Weather Forecast Section -->
+            <section class="weather-forecast">
+                <h3>Weather Forecast</h3>
+                <input type="text" id="city-input" placeholder="Enter city name" />
+                <button id="fetch-weather">Get Weather</button>
+                <div id="weather-info">
+                    <p>Loading weather data...</p>
+                </div>
+            </section>
+
+            <!-- Features Section -->
+            <section class="features">
+                <div class="feature-card">
+                    <h3><a href="resource-hub.html">Resource Hub</a></h3>
+                    <p>Discover resources for sustainable farming.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Community Support</h3>
+                    <p>Connect with fellow farmers and experts.</p>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- JavaScript for Weather Fetching -->
+    <script>
+        const apiUrl = 'http://localhost:3000/api/weather'; // Your API endpoint
+
+        document.getElementById('fetch-weather').addEventListener('click', fetchWeather);
+
+        async function fetchWeather() {
+            const city = document.getElementById('city-input').value; // Get city from input
+            
+            if (!city) {
+                alert('Please enter a city name.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${apiUrl}?city=${city}`);
+                const data = await response.json();
+                displayWeather(data);
+            } catch (error) {
+                console.error('Error fetching the weather data:', error);
+                document.getElementById('weather-info').innerHTML = '<p>Error loading weather data.</p>';
+            }
+        }
+
+        function displayWeather(data) {
+            if (data.cod === 200) {
+                const { main, weather, name } = data;
+                const weatherHtml = `
+                    <h4>Weather in ${name}</h4>
+                    <p>Temperature: ${main.temp} °C</p>
+                    <p>Condition: ${weather[0].description}</p>
+                `;
+                document.getElementById('weather-info').innerHTML = weatherHtml;
+            } else {
+                document.getElementById('weather-info').innerHTML = `<p>${data.error}</p>`;
+            }
+        }
+
+        // Fetch default weather when the page loads (optional)
+        window.onload = () => { document.getElementById('city-input').value = 'London'; fetchWeather(); };
+    </script>
+
+    <!-- Add your styles here -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            display: flex;
+        }
+
+        .sidebar {
+            width: 200px;
+            background-color: #343a40;
+            color: white;
+            padding: 20px;
+        }
+
+        .sidebar .menu li {
+            list-style-type: none;
+            margin-bottom: 10px;
+        }
+
+        .sidebar .menu a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding-left: 20px;
+        }
+
+        .hero {
+            background-color: #007bff;
+            color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .weather-forecast {
+            background-color: #e9ecef;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        #weather-info {
+            margin-top: 10px;
+        }
+        
+        input[type='text'] {
+          padding: 10px; 
+          margin-right: 10px; 
+          border-radius: 5px; 
+          border: 1px solid #ced4da; 
+          width: calc(100% - 130px);
+      }
+      
+      button {
+          padding: 10px; 
+          border-radius: 5px; 
+          border: none; 
+          background-color: #007bff; 
+          color: white; 
+          cursor:pointer; 
+      }
+      
+      button:hover {
+          background-color:#0056b3; 
+      }
+      
+      h4, p { 
+          margin-bottom:5px; 
+      }
+      
+      .feature-card { 
+          background-color:#ffffff; 
+          border-radius:5px; 
+          padding:15px; 
+          margin-top :10px; 
+      }
+      
+      .feature-card h3 a { 
+          text-decoration:none; 
+          color:#007bff; 
+      }
+      
+      .feature-card h3 a:hover { 
+          text-decoration :underline; 
+      }
+    </style>
+
+</body>
+</html>
